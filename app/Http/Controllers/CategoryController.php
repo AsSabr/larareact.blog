@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Category;
+use App\Lib\Helper;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
-
-//    use Helper;
+    use Helper;
 
     /**
      * CategoryController constructor.
@@ -22,9 +23,14 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        if($request->input('all')) {
+            $categories = Category::orderBy('id', 'DESC')->get();
+        } else {
+            $categories = Category::paginate(10);
+        }
+        return response()->json(['data' => $categories], 200);
     }
 
     /**
@@ -45,7 +51,17 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        if(!auth("api")->user()->is_admin) {
+            return response()->json(['message' => 'Unauthorize'], 500);
+        }
+        $this->validate($request, [
+            'title' => 'required'
+        ]);
+        $category = new Category();
+        $category->title = $request->input('title');
+        $category->slug = $this->slugify($category->title);
+        $category->save();
+        return response()->json(['data' => $category, 'message' => 'Created successfully'], 201);
     }
 
     /**
@@ -56,7 +72,8 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-        //
+        $category = Category::findOrFail($id);
+        return response()->json(['data' => $category], 200);
     }
 
     /**
@@ -79,7 +96,17 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        if(!auth("api")->user()->is_admin) {
+            return response()->json(['message' => 'Unauthorized'], 500);
+        }
+        $category = Category::findOrFail($id);
+        $this->validate($request, [
+            'title' => 'required'
+        ]);
+        $category->title = $request->input('title');
+        $category->slug = $this->slugify($category->title);
+        $category->save();
+        return response()->json(['data' => $category, 'message' => 'Updated successfully'], 200);
     }
 
     /**
@@ -90,6 +117,11 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        //
+        if(!auth("api")->user()->is_admin) {
+            return response()->json(['message' => 'Unauthorize'], 500);
+        }
+        $category = Category::findOrFail($id);
+        $category->delete();
+        return response()->json(['message' => 'Deleted successfully'], 200);
     }
 }

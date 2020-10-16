@@ -2,18 +2,30 @@
 
 namespace App\Http\Controllers;
 
+use App\Tag;
 use Illuminate\Http\Request;
 
 class TagController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth:api')->only(['store', 'update', 'destroy']);
+    }
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        if($request->input('all')) {
+            $tags = Tag::all();
+        } else {
+            $tags = Tag::paginate(10);
+        }
+        return response()->json(['data' => $tags], 200);
     }
 
     /**
@@ -34,7 +46,16 @@ class TagController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        if(!auth("api")->user()->is_admin) {
+            return response()->json(['message' => 'Unauthorized'], 500);
+        }
+        $this->validate($request, [
+            'title' => 'required'
+        ]);
+        $tag = new Tag();
+        $tag->title = $request->input('title');
+        $tag->save();
+        return response()->json(['data' => $tag, 'message' => 'Created successfully'], 201);
     }
 
     /**
@@ -45,7 +66,8 @@ class TagController extends Controller
      */
     public function show($id)
     {
-        //
+        $tag = Tag::findOrFail($id);
+        return response()->json(['data' => $tag], 200);
     }
 
     /**
@@ -68,7 +90,16 @@ class TagController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        if(!auth("api")->user()->is_admin) {
+            return response()->json(['message' => 'Unauthorize'], 500);
+        }
+        $tag = Tag::findOrFail($id);
+        $this->validate($request, [
+            'title' => 'required'
+        ]);
+        $tag->title = $request->input('title');
+        $tag->save();
+        return response()->json(['data' => $tag, 'message' => 'Updated successfully'], 200);
     }
 
     /**
@@ -79,6 +110,11 @@ class TagController extends Controller
      */
     public function destroy($id)
     {
-        //
+        if(!auth("api")->user()->is_admin) {
+            return response()->json(['message' => 'Unauthorize'], 500);
+        }
+        $tag = Tag::findOrFail($id);
+        $tag->delete();
+        return response()->json(['message' => 'Deleted successfully'], 200);
     }
 }
