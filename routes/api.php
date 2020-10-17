@@ -22,3 +22,9 @@ Route::post('login', 'Auth\\LoginController@login')->name('login');
 Route::post('register', 'Auth\\RegisterController@register')->name('register');
 Route::get('logout', 'Auth\\LoginController@logout')->name('logout');
 Route::get('check-auth', 'Auth\\LoginController@checkAuth')->name('logout');
+
+Route::resource('categories', 'CategoryController');
+Route::resource('posts', 'PostController');
+Route::resource('tags', 'TagController');
+Route::get('profile', 'UserController@profile');
+Route::resource('users', 'UserController');

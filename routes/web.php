@@ -13,10 +13,20 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+//Route::get('/', function () {
+//    return view('welcome');
+//});
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+//Route::get('/home', 'HomeController@index')->name('home');
+
+// Website route
+Route::get('/{path?}', function () {
+    return view('main');
+})->where('path', '[^admin]*');
+
+// Admin
+Route::get('/manage/{path?}', function () {
+    return view('manage.manage');
+})->where('path', '.*');
