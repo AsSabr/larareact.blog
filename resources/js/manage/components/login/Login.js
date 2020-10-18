@@ -89,11 +89,8 @@ class Login extends Component
                                     this.state.errors && this.state.errors.password?(<div className="help-block">{this.state.errors.password[0]}</div>):null
                                 }
                             </div>
-                            <div className="row">
-                                <div className="col-xs-4">
-                                    <button type="submit" className="btn btn-primary btn-block btn-flat">Sign In</button>
-                                </div>
-                            </div>
+                            <button type="submit" className="btn btn-primary btn-block btn-flat">Sign In</button>
+
                         </form>
                     </div>
                 </div>

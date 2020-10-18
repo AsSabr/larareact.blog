@@ -1,5 +1,9 @@
 import React from 'react';
-import { connect } from 'react-redux';
+// import { connect } from 'react-redux';
+
+const disabledStyle = {
+    color: '#ccc'
+};
 
 class PaginationItem extends React.Component {
     constructor(props)
@@ -11,11 +15,10 @@ class PaginationItem extends React.Component {
         this.props.onclick(this.props.page);
     }
     render() {
-        return this.props.show ? (
-            <li className={this.props.active ? 'active' : ''}>
-                <a href="#" onClick={this.paginate.bind(this) }>{this.props.title}</a>
-            </li>
-        ) : null;
+        return (
+            <a href="#" rel={this.props.rel} onClick={this.paginate.bind(this) } style={{color: !this.props.enabled?'#ccc':''}}>{this.props.title}</a>
+        );
     }
 }
-export default connect(null, mapDispatchToProps)(PaginationItem);
+// export default connect(null, mapDispatchToProps)(PaginationItem);
+export default PaginationItem;

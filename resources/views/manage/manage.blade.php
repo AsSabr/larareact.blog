@@ -8,12 +8,12 @@
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
-
     <link rel="stylesheet" href="{{ asset('css/manage/manage.css') }}">
 
 </head>
     <body>
         <div id="app"></div>
+        <script src="{{ asset('assets/manage/jquery.min.js') }}"></script>
         <script src="{{ asset('js/manage/manage.js') }}"></script>
     </body>
 </html>
